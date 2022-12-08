@@ -42,8 +42,8 @@ async def send_text(msg: types.Message, state: FSMContext):
 
 
 @dp.message_handler(commands=['start', 'help'])
-async def send_opds(msg: types.Message):
-    await msg.answer('Для вобра источника книг введи комнду /opds \nпо вопросам @makcim646')
+async def send_hello(msg: types.Message):
+    await msg.answer('Для выбора источника книг введи комнду \n/opds \nпо вопросам @makcim646')
 
 
 
@@ -109,7 +109,7 @@ async def back(callback: types.CallbackQuery):
         await callback.answer()
 
     except Exception as e:
-        await callback.answer()
+        await callback.answer('это начальнольное меню')
 
 
 @dp.callback_query_handler(lambda c: int(c.data) == hash('search'))
@@ -119,7 +119,7 @@ async def search(callback: types.CallbackQuery, state: FSMContext):
     otvet = InlineKeyboardMarkup(row_width=1).add({"text":'<< back',"callback_data":'back'})
     user_callback_edit[str(callback.from_user.id)] = callback.message.message_id
 
-    await bot.edit_message_text("Введи то что хочешь найти", chat_id=callback.from_user.id,
+    await bot.edit_message_text("Отправь то что хочешь найти", chat_id=callback.from_user.id,
                                  message_id=callback.message.message_id,  reply_markup=otvet)
 
     await callback.answer()
@@ -128,12 +128,13 @@ async def search(callback: types.CallbackQuery, state: FSMContext):
 
 async def send_msg(usr_id:int, msg_id:int, text:str):
     try:
+        c = 0
         firs = 0
         last = 100
         msg_c = len(text.split('\n'))
         otvet = InlineKeyboardMarkup(row_width=1).add({"text":'<< back',"callback_data":'back'})
         while True:
-            if msg_c < last:
+            if msg_c < last and c == 0:
                 await bot.edit_message_text(text, chat_id=usr_id,
                                  message_id=msg_id,
                                  reply_markup=otvet, parse_mode='MARKDOWN',
@@ -153,6 +154,7 @@ async def send_msg(usr_id:int, msg_id:int, text:str):
 
             firs += 100
             last += 100
+            c += 1
 
     except Exception as e:
         logging.exception(e)

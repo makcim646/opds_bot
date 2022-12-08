@@ -86,6 +86,7 @@ class Opds:
     def back_hop(self):
         if len(self.old_menu) <= 1:
             self.hop_menu = dict()
+            self.old_menu = list()
             self.hop_menu = {**self.main_menu}
         else:
             old = self.old_menu[-1]
@@ -173,11 +174,12 @@ def main(url):
     opds = Opds(url)
 
     while True:
+        print(len(opds.old_menu))
         if opds.have_next_hop:
             next_hop_list = []
             for n, hop in enumerate(opds.hop_menu.keys()):
                 next_hop_list.append(hop)
-                print(n, hop, opds.main_url + opds.hop_menu[hop])
+                print(n, hop)
 
             print('q для выхода и b для возврата')
             next_input = input('следующий шаг: ')
